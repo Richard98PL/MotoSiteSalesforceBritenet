@@ -1,0 +1,89 @@
+<aura:component controller="BasketApexController" access="global" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" >
+
+    <aura:attribute name="TotalNumberOfRecord" type="integer" default="0" description="use for display Number of records"/>
+    <aura:attribute name="family" type="String[]" />
+    <aura:attribute name="fields" type="String[]" default="['Name','Family']" />
+    <aura:attribute name="count" type="Integer" default="0"/>
+    <aura:attribute name="fullprice" type="Integer" default="0"/>
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <ltng:require
+            styles="{!$Resource.SLDS252 +
+                    '/styles/salesforce-lightning-design-system.min.css'}" />
+
+    <lightning:card footer="" title="Basket" iconName="standard:product_required">
+
+        <div class="przycisk">
+            <lightning:button variant="destructive" label="Wyczyść koszyk" onclick="{!c.handleClear}"/>
+            <lightning:button variant="brand" label="Złóż zamówienie" onclick="{!c.handleOrder}"/>
+
+        </div>
+
+
+        <lightning:spinner variant="brand" size="large" aura:id="Id_spinner" class="slds-hide" />
+
+        <div class="slds-m-around_x-small" id="my-element1">
+            <lightning:badge label="{!v.TotalNumberOfRecord}" />
+        </div>
+
+
+        <table  id="searchTable" class="myTable">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate" title="Motorcycle">Product</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Count">Count</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Count">Single Price</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Count">Value</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <aura:iteration items="{!v.family}" var="item" indexVar="count">
+                <tr class="{! count % 2  ? '' : 'tier-one' }"  id="{!count +'tablerow'}" >
+
+                    <td>
+                        <div class="slds-truncate">
+                            <lightning:recordForm aura:id = "myRecordForm"
+                                                  recordId="{!item.id}"
+                                                  objectApiName="Product2"
+                                                  fields="{!v.fields}"
+                                                  columns="3"
+                                                  mode="view"
+                            />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="slds-truncate"><lightning:formattedNumber value="{!item.count}"/></div>
+                    </td>
+
+                    <td>
+                        <div class="slds-truncate"><lightning:formattedNumber value="{!item.price}"/></div>
+                    </td>
+
+                    <td>
+                        <div class="slds-truncate"><lightning:formattedNumber value="{!item.fullprice}"/></div>
+                    </td>
+
+                </tr>
+            </aura:iteration>
+            <div class="fullprice">
+                Full price : <lightning:formattedNumber value="{!v.fullprice}"/>
+            </div>
+            </tbody>
+        </table>
+
+
+    </lightning:card>
+</aura:component>

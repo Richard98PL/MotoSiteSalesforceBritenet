@@ -1,0 +1,25 @@
+.THIS {
+    padding : 15px;
+}
+
+.THIS .badge {
+    padding-left: 9px;
+    padding-right: 9px;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+  }
+
+  .THIS .label-warning[href],
+  .THIS .badge-warning[href] {
+    background-color: #c67605;
+  }
+
+  .THIS#lblCartCount {
+      font-size: 12px;
+      background: red;
+      color: #fff;
+      padding: 0 5px;
+      vertical-align: top;
+      margin-left: -5px;
+  }

@@ -1,0 +1,63 @@
+<aura:component access="global" controller="BasketApexController" implements="force:appHostable,force:hasRecordId,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" >
+
+    <aura:attribute name="price" type="integer"/>
+    <aura:attribute name="recordLoadError" type="String"/>
+    <aura:attribute name="TotalNumberOfRecord" type="integer" default="0" description="use for display Number of records"/>
+    <aura:attribute name="fields" type="String[]" default="[]" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:registerEvent name ="AddToBasket" type="c:AddToBasketEvent"/>
+
+    <lightning:card iconName="standard:lead_list" title="MOTODETAILS">
+
+
+        <table  id="searchTable" class="myTable">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate" title="Motorcycle">Product</div>
+                </th>
+
+                <th scope="col">
+                    <div class="slds-truncate" title="Count">Price</div>
+                </th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <tr>
+
+                <td>
+                    <div class="slds-truncate">
+                        <lightning:recordForm aura:id = "myRecordForm"
+                                              recordId="{!v.recordId}"
+                                              objectApiName="Product2"
+                                              fields="{!v.fields}"
+                                              columns="3"
+                                              mode="view"
+                        />
+                    </div>
+                </td>
+
+
+                <td>
+
+                    <lightning:formattedNumber value="{!v.price}"/>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="przycisk">
+            <lightning:button variant="success" label="Dodaj do koszyka" title="Success" onclick="{!c.handleClick}"/>
+        </div>
+
+    </lightning:card>
+
+</aura:component>

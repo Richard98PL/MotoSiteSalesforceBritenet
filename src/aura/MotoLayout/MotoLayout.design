@@ -1,0 +1,3 @@
+<design:component label="Moto Layout">
+    <design:attribute name="showSearch" label="Show Search Box" />
+</design:component>

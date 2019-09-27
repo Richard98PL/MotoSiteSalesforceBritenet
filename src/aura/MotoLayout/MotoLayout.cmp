@@ -1,0 +1,28 @@
+<aura:component implements="forceCommunity:themeLayout">
+
+    <aura:attribute name="profileMenu" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="search" type="Aura.Component[]"/>
+    <aura:attribute name="sidebarFooter" type="Aura.Component[]"/>
+    <aura:attribute name="showSearch" type="Boolean" default="true" />
+
+    <div class="row">
+        <div class="column1">
+            <div class="logoContainer"></div>
+
+            <div class="profileMenuRegion">
+                    {!v.profileMenu}
+            </div>
+
+            <aura:if isTrue="{!v.showSearch}">
+                    {!v.search}
+            </aura:if>
+            <c:MotoNav> </c:MotoNav>
+                {!v.sidebarFooter}
+        </div>
+        <div class="column">
+                {!v.body}
+        </div>
+    </div>
+
+
+</aura:component>

@@ -1,0 +1,11 @@
+<aura:component>
+
+    <aura:attribute name="BasketNumber" type="Integer"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:AddToBasketEvent" action="{!c.AddToBasket}"/>
+
+    <i class="fa" style="font-size:24px" onmouseover="{!c.changeColorGreen}" onmouseout="{!c.changeColorNone}" onclick ="{!c.BasketPage}" id="b">&#xf07a;</i>
+    <span class='badge badge-warning' id='lblCartCount' onmouseover="{!c.changeColorGreen}" onmouseout="{!c.changeColorNone}" onclick ="{!c.BasketPage}"> {!v.BasketNumber} </span>
+
+
+</aura:component>

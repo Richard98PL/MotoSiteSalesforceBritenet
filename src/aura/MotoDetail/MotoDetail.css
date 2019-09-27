@@ -1,0 +1,14 @@
+.THIS {
+
+}
+
+.THIS .przycisk{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 15px;
+}
+
+.THIS .forceDataFormClass{
+    padding: 15px;
+}
