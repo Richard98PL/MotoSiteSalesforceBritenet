@@ -1,28 +1,28 @@
 .THIS .column {
+
   float: left;
   width: 75%;
+
 }
 
 .THIS .column1 {
+
   float: left;
   width: 25%;
-}
 
-.THIS .body{
-    background-image: url('https://previews.123rf.com/images/vska/vska1606/vska160600072/58664048-abstract-digital-web-site-header-banner-technology-background.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
 }
 
 .THIS .row:after {
+
   content: "";
   display: table;
   clear: both;
+
 }
 
 
 .THIS .logoContainer {
+
 background-image: t('url(' + brandLogoImage  + ')');
 background-position: center;
 background-repeat: no-repeat;
@@ -36,4 +36,5 @@ display: block;
 outline: 0;
 height: 50px;
 margin-top: 10px;
+
 }

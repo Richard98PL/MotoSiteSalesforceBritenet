@@ -10,18 +10,29 @@
             <div class="logoContainer"></div>
 
             <div class="profileMenuRegion">
+
                     {!v.profileMenu}
+
             </div>
 
             <aura:if isTrue="{!v.showSearch}">
+
                     {!v.search}
+
             </aura:if>
+
             <c:MotoNav> </c:MotoNav>
+
                 {!v.sidebarFooter}
+
         </div>
+
         <div class="column">
+
                 {!v.body}
+
         </div>
+
     </div>
 
 

@@ -1,128 +1,214 @@
 ({
+  doInitHelper : function (cmp,event){
 
-    SearchHelper: function(cmp, event, helper) {
+    cmp.find("Id_spinner").set("v.class" , 'slds-show');
+            let action = cmp.get("c.FetchPrices");
 
-        let apexName = event.getParam("keywordName");
-		let apexCountry = event.getParam("keywordCountry");
+            action.setCallback(this, function(response) {
 
-        cmp.find("Id_spinner").set("v.class" , 'slds-show');
+                cmp.find("Id_spinner").set("v.class" , 'slds-hide');
+                let state = response.getState();
 
-        let action = cmp.get("c.FetchAccount");
-        action.setParams({
-            'searchKeyWord': apexName,
-            'searchKeyWordCountry': apexCountry,
-        });
+                if (state === "SUCCESS") {
 
-        action.setCallback(this, function(response) {
+                    console.log("SUCCESS");
 
-            cmp.find("Id_spinner").set("v.class" , 'slds-hide');
-            let state = response.getState();
-            cmp.set("v.toggle", true);
+                    let storeResponse = response.getReturnValue();
 
-            if (state === "SUCCESS") {
+                    let priceMap = new Map();
 
-                let toastEvent = $A.get("e.force:showToast");
-                    toastEvent.setParams({
-                        "title": "Success",
-                        "message": "Divisions"
-                    });
-                    toastEvent.fire();
+                    for(let i=0;i<storeResponse.length;i++){
 
-                let storeResponse = response.getReturnValue();
+                        priceMap.set(
 
-                if(storeResponse.length == 0) {
+                            Object.getOwnPropertyDescriptor(storeResponse[i],"Product2Id").value.toString(),
+                            Object.getOwnPropertyDescriptor(storeResponse[i],"UnitPrice").value.toString()
 
-                    cmp.set("v.Message", true);
+                        );
+                    }
 
-                }else {
+                    let tablicaId = [];
+            		let tablicaCount = [];
 
-                    cmp.set("v.Message", false);
-                    let EnablingButtonEvent = $A.get("e.c:EnablingButtonEvent");
-                    EnablingButtonEvent.fire();
+                    for (let i = 0; i < sessionStorage.length; i++) {
 
-                }
+                        if( sessionStorage.key(i).length == 18){
 
-                cmp.set("v.TotalNumberOfRecord", storeResponse.length);
-                cmp.set("v.searchResult", storeResponse);
+                            tablicaId.push(sessionStorage.key(i));
 
-            }else if (state === "INCOMPLETE") {
+                        }else if(sessionStorage.key(i).length == 23){
 
-                alert('Response is Incompleted');
+                            tablicaCount.push(sessionStorage.getItem(sessionStorage.key(i)));
 
-            }else if (state === "ERROR") {
+                        }
+                    }
 
-                var errors = response.getError();
-                if (errors) {
+                    sessionStorage.setItem("DifferentProducts",tablicaId.length);
 
-                    if (errors[0] && errors[0].message) {
+                    let tablicaJSON = [];
+            		let fullprice = 0;
 
-                    let toastEvent = $A.get("e.force:showToast");
-                    toastEvent.setParams({
-                        "title": "Error",
-                        "message": errors[0].message
-                    });
-                    toastEvent.fire();
+                    for(let i = 0; i < tablicaId.length; i++){
+
+                        tablicaJSON.push({
+
+                            id: tablicaId[i],
+                            count : tablicaCount[i],
+                            price : priceMap.get(tablicaId[i]),
+                            fullprice : priceMap.get(tablicaId[i])*tablicaCount[i]
+
+                        });
+
+                        fullprice += priceMap.get(tablicaId[i])*tablicaCount[i];
+
+                    };
+
+                    /*console.log("session storage");
+                    for (i = 0; i < sessionStorage.length; i++) {
+
+                     console.log(sessionStorage.key(i) + "=[" + sessionStorage.getItem(sessionStorage.key(i)) + "]");
+
+                    }*/
+
+                    cmp.set("v.fullprice",fullprice);
+                    cmp.set("v.TotalNumberOfRecord", sessionStorage.getItem("BasketNumber"));
+                    cmp.set("v.family",tablicaJSON);
+
+                    cmp.find("Id_spinner").set("v.class" , 'slds-hide');
+
+                }else if (state === "INCOMPLETE") {
+
+                    alert('Response is Incompleted');
+
+                }else if (state === "ERROR") {
+
+                    var errors = response.getError();
+                    if (errors) {
+
+                        if (errors[0] && errors[0].message) {
+
+                        let toastEvent = $A.get("e.force:showToast");
+                        toastEvent.setParams({
+                            "title": "Error",
+                            "message": errors[0].message
+                        });
+                        toastEvent.fire();
+
+                        }
+                    }else {
+
+                        var toastEvent = $A.get("e.force:showToast");
+                        toastEvent.setParams({
+                            "title": "Error",
+                            "message": "Error."
+                        });
+                        toastEvent.fire();
 
                     }
-                }else {
+                }
+            });
 
-                    var toastEvent = $A.get("e.force:showToast");
-                    toastEvent.setParams({
-                        "title": "Error",
-                        "message": "Error."
+            $A.enqueueAction(action);
+
+  },
+
+  HandleOrderHelper : function (cmp,event){
+
+     let howManyDifferentProducts = JSON.parse(sessionStorage.getItem("DifferentProducts"));
+
+            let tablicaId = [];
+            let tablicaCount = [];
+
+            for (let i = 0; i < sessionStorage.length; i++) {
+             if( sessionStorage.key(i).length == 18){
+
+                  tablicaId.push(sessionStorage.key(i)) ;
+
+              }else if(sessionStorage.key(i).length == 23){
+
+                   tablicaCount.push(sessionStorage.getItem(sessionStorage.key(i)));
+
+               }
+            }
+
+            let OrderMap = [];
+            for(let i = 0; i < howManyDifferentProducts ;i++){
+
+                 let tmpObj = new Object();
+                 tmpObj.key = tablicaId[i] ;
+                 tmpObj.value =  tablicaCount[i] ;
+                 OrderMap.push(tmpObj);
+
+               }
+
+             let action = cmp.get("c.CreateOrder");
+
+                    action.setParams({
+                        'JSONorder' : JSON.stringify(OrderMap)
                     });
-                    toastEvent.fire();
+            action.setCallback(this, function(response2) {
 
-                }
-            }
-        });
+                    cmp.find("Id_spinner").set("v.class" , 'slds-hide');
+                    let state = response.getState();
 
-        $A.enqueueAction(action);
+                    if (state === "SUCCESS") {
 
-    },
+                         sessionStorage.clear();
+                         location.reload();
 
-    ClearSearchHelper : function(cmp, event, helper){
+                         let toastEvent = $A.get("e.force:showToast");
+                                    toastEvent.setParams({
+                                        "title": "Success",
+                                        "message": "Złożyłeś zamówienie."
+                                    });
+                                    toastEvent.fire();
 
-        sessionStorage.clear();
-        cmp.set("v.toggle", false);
+                    }else if (state === "INCOMPLETE") {
 
-    },
+                        let toastEvent = $A.get("e.force:showToast");
+                            toastEvent.setParams({
+                                "title": "INCOMPLETE",
+                                "message": "INCOMPLETE."
+                            });
+                            toastEvent.fire();
 
-    MapShowHelper : function(cmp, event, helper){
+                    }else if (state === "ERROR") {
 
-        let tableRowID = event.currentTarget.id;
+                        let toastEvent = $A.get("e.force:showToast");
+                            toastEvent.setParams({
+                                "title": "ERROR",
+                                "message": "ERROR."
+                            });
+                            toastEvent.fire();
 
-        if(sessionStorage.getItem("lastRowNumber") != null){
+                        var errors = response2.getError();
+                        if (errors) {
 
-            if(JSON.parse(sessionStorage.getItem("lastRowNumber"))%2){
+                            if (errors[0] && errors[0].message) {
 
-                 document.getElementById(JSON.parse(sessionStorage.getItem("lastRowNumber")).concat('tablerow')).className ='';
+                            let toastEvent = $A.get("e.force:showToast");
+                            toastEvent.setParams({
+                                "title": "Error",
+                                "message": errors[0].message
+                            });
+                            toastEvent.fire();
 
-                }else{
+                            }
+                        }else {
 
-                    document.getElementById(JSON.parse(sessionStorage.getItem("lastRowNumber")).concat('tablerow')).className ='tier-one';
+                            let toastEvent = $A.get("e.force:showToast");
+                            toastEvent.setParams({
+                                "title": "Error",
+                                "message": "Error."
+                            });
+                            toastEvent.fire();
 
-                }
-            }
+                        }
+                    }
+                });
 
-        document.getElementById(tableRowID).className ='tier-two';
+                $A.enqueueAction(action2);
 
-        let str = tableRowID.slice(0, (tableRowID.length-'tablerow'.length));
-        sessionStorage.setItem('lastRowNumber', JSON.stringify(str));
+  },
 
-        cmp.find("Id_spinner").set("v.class" , 'slds-show');
-        let datasetIdOfResult = event.currentTarget.dataset.value;
-        console.log(datasetIdOfResult);
-
-        let TableClickEvent = $A.get("e.c:TableClickEvent");
-        TableClickEvent.setParams({"id":datasetIdOfResult});
-        TableClickEvent.fire();
-
-    },
-
-    ResultReceiverHelper : function(cmp, event, helper){
-
-        cmp.find("Id_spinner").set("v.class" , 'slds-hide');
-
-    },
 })

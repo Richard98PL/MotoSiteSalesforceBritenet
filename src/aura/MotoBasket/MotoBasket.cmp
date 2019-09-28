@@ -16,8 +16,9 @@
     <lightning:card footer="" title="Basket" iconName="standard:product_required">
 
         <div class="przycisk">
-            <lightning:button variant="destructive" label="Wyczyść koszyk" onclick="{!c.handleClear}"/>
-            <lightning:button variant="brand" label="Złóż zamówienie" onclick="{!c.handleOrder}"/>
+
+            <lightning:button variant="destructive" label="Wyczyść koszyk" onclick="{!c.HandleClear}"/>
+            <lightning:button variant="brand" label="Złóż zamówienie" onclick="{!c.HandleOrder}"/>
 
         </div>
 
@@ -25,7 +26,9 @@
         <lightning:spinner variant="brand" size="large" aura:id="Id_spinner" class="slds-hide" />
 
         <div class="slds-m-around_x-small" id="my-element1">
+
             <lightning:badge label="{!v.TotalNumberOfRecord}" />
+            
         </div>
 
 

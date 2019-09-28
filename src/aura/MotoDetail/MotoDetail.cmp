@@ -11,7 +11,6 @@
 
     <lightning:card iconName="standard:lead_list" title="MOTODETAILS">
 
-
         <table  id="searchTable" class="myTable">
             <thead>
             <tr class="slds-text-title_caps">
@@ -27,7 +26,6 @@
             </thead>
             <tbody>
 
-
             <tr>
 
                 <td>
@@ -41,7 +39,6 @@
                         />
                     </div>
                 </td>
-
 
                 <td>
 
